@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Preparation Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .form-container h1 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-container input, .form-container select, .form-container button {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-container button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Exam Form</h1>
+        <form id="examForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+            <label for="contact">Contact No:</label>
+            <input type="tel" id="contact" name="contact" placeholder="Enter your contact number" required>
+            <label for="exam">Preparing For:</label>
+            <select id="exam" name="exam" required>
+                <option value="">Select an exam</option>
+                <option value="GRE">JEE</option>
+                <option value="GMAT">IAT</option>
+                <option value="SAT">NEST</option>
+                <option value="CAT">CAT</option>
+            </select>
+            <button type="button" id="submitButton">Submit</button>
+        </form>
+    </div>
+
+    <script type="module">
+        // Import Firebase scripts
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+    apiKey: "AIzaSyA7gTKeZ1mAHbqDu2aei4GXm3QxZYiU4AY",
+    authDomain: "mentorsmantratestportal1.firebaseapp.com",
+    databaseURL: "https://mentorsmantratestportal1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "mentorsmantratestportal1",
+    storageBucket: "mentorsmantratestportal1.appspot.com",
+    messagingSenderId: "1017022204028",
+    appId: "1:1017022204028:web:5eb4ae6f90e98a1d28e1f9",
+    measurementId: "G-XZ58QNRPTZ"
+};
+
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Function to save data
+        function saveData() {
+            const name = document.getElementById('name');
+            const contact = document.getElementById('contact');
+            const exam = document.getElementById('exam');
+
+            let valid = true;
+
+            // Reset borders to default
+            [name, contact, exam].forEach(field => field.style.border = "1px solid #ccc");
+
+            // Validate each field
+            if (!name.value) {
+                valid = false;
+                name.style.border = "2px solid red";
+                alert("Please fill in the Name field.");
+            } else if (!contact.value) {
+                valid = false;
+                contact.style.border = "2px solid red";
+                alert("Please fill in the Contact field.");
+            } else if (!exam.value) {
+                valid = false;
+                exam.style.border = "2px solid red";
+                alert("Please select an exam.");
+            }
+
+            if (valid) {
+                const dataRef = ref(database, 'users/' + Date.now());
+                set(dataRef, {
+                    name: name.value,
+                    contact: contact.value,
+                    exam: exam.value
+                }).then(() => {
+                    alert('Data saved successfully!');
+                    document.getElementById('examForm').reset();
+                }).catch((error) => {
+                    alert('Failed to save data: ' + error.message);
+                });
+            }
+        }
+
+        // Add event listener to button
+        document.getElementById('submitButton').addEventListener('click', saveData);
+    </script>
+</body>
+</html>
